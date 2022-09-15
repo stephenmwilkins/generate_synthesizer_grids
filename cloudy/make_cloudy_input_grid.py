@@ -111,25 +111,17 @@ for sps_grid in sps_grids:
     iZ_ref = grid.get_nearest_index(p['Z_ref'], grid.metallicities)
 
     # --- update the parameter file with the actual reference age and metallicity
-    p['log10age_ref'] = grid.log10ages[ia_ref]
-    p['Z_ref'] = grid.metallicities[iZ_ref]
-
-    print(f"{ia_ref} {p['log10age_ref']}")
-    print(f"{iZ_ref} {p['Z_ref']}")
+    p['log10age_ref_actual'] = grid.log10ages[ia_ref]
+    p['Z_ref_actual'] = grid.metallicities[iZ_ref]
 
     output_dir = f'{synthesizer_data_dir}/cloudy/{sps_grid}_{cloudy_grid}'
-
 
     Path(output_dir).mkdir(parents = True, exist_ok = True)
     Path(f'{output_dir}/output').mkdir(parents = True, exist_ok = True) # for apollo output files
 
-
     na = len(grid.ages)
     nZ = len(grid.metallicities)
     n = na * nZ
-
-    na = 1
-    nZ = 1
 
     make_input_files = True
 
