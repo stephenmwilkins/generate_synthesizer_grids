@@ -47,7 +47,7 @@ apollo_job_script = f"""
 # needs to be copied, and then execute the program
 ######################################################################
 
-{cloudy} -r $SGE_TASK_ID
+${cloudy} -r $SGE_TASK_ID
 """
 
 
@@ -78,8 +78,22 @@ p = {
         }
 
 
+sps_grids = [
+    'bc03_chabrier03',
+    'bpass-v2.2.1-bin_100-100',
+    'bpass-v2.2.1-bin_100-300',
+    'bpass-v2.2.1-bin_135-100',
+    'bpass-v2.2.1-bin_135-300',
+    'bpass-v2.2.1-bin_135all-100',
+    'bpass-v2.2.1-bin_170-100',
+    'bpass-v2.2.1-bin_170-300',
+    'bpass-v2.2.1-bin_chab-100',
+    'bpass-v2.2.1-bin_chab-300',
+    'maraston-rhb_kroupa',
+    'maraston-rhb_salpeter',
+]
 
-sps_grids = ['bpass-v2.2.1-bin_chab-100']
+# sps_grids = ['bpass-v2.2.1-bin_chab-100']
 
 cloudy_grid = f'cloudy-{p["cloudy_version"]}_log10U{p["U_model"]}{p["log10U_ref"]}'
 
@@ -104,7 +118,7 @@ for sps_grid in sps_grids:
     print(f"{iZ_ref} {p['Z_ref']}")
 
     output_dir = f'{synthesizer_data_dir}/cloudy/{sps_grid}_{cloudy_grid}'
-    print(output_dir)
+
 
     Path(output_dir).mkdir(parents = True, exist_ok = True)
     Path(f'{output_dir}/output').mkdir(parents = True, exist_ok = True) # for apollo output files
@@ -139,8 +153,6 @@ for sps_grid in sps_grids:
 
                     log10U = p['log10U_ref'] + (1/3) * delta_log10Q
 
-                    print(delta_log10Q, log10U)
-
                 else:
 
                     log10U = p['log10U_ref']
@@ -163,4 +175,5 @@ for sps_grid in sps_grids:
 
     open(f'{output_dir}/run_grid.job','w').write(apollo_job_script)
     yaml.dump(p, open(f'{output_dir}/params.yaml', 'w'))
+    print(output_dir)
     print(f'qsub -t 1:{n} run_grid.job')
