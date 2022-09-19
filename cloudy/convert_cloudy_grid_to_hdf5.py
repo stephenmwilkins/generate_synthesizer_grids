@@ -137,6 +137,8 @@ for sps_model in sps_grids:
 
         for line_id in default_lines:
             lines[f'{line_id}/luminosity'] = np.zeros((na, nZ))
+            lines[f'{line_id}/stellar_continuum'] = np.zeros((na, nZ))
+            lines[f'{line_id}/nebular_continuum'] = np.zeros((na, nZ))
             lines[f'{line_id}/continuum'] = np.zeros((na, nZ))
 
 
