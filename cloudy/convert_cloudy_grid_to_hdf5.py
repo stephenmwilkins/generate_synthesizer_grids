@@ -88,6 +88,9 @@ for sps_model in sps_grids:
         spectra = hf.create_group('spectra')  # create a group holding the spectra in the grid file
         spectra.attrs['spec_names'] = spec_names  # save list of spectra as attribute
 
+
+        print(spec_names)
+
         spectra['wavelength'] = lam  # save the wavelength
 
         nlam = len(lam)  # number of wavelength points
@@ -146,12 +149,12 @@ for sps_model in sps_grids:
 
                 # --- get continuum spectra
 
-                continuum = spectra['transmitted'][ia, iZ] + spectra['nebular_continuum'][ia, iZ]
+                continuum = spectra['transmitted'][ia, iZ] + spectra['nebular'][ia, iZ] - spectra['linecont'][ia, iZ]
 
                 for line_id, line_wv, line_lum in zip(line_ids, line_wavelengths, line_luminosities):
                     lines[line_id].attrs['wavelength'] = line_wv
-                    lines[f'{line_id}/luminosity'][na, nZ] = 10**(line_lum + dlog10Q[ia, iZ]) # erg s^-1
-                    lines[f'{line_id}/continuum'][na, nZ] = np.interp(line_wv, lam, continuum) # erg s^-1 Hz^-1
+                    lines[f'{line_id}/luminosity'][ia, iZ] = 10**(line_lum + dlog10Q[ia, iZ]) # erg s^-1
+                    lines[f'{line_id}/continuum'][ia, iZ] = np.interp(line_wv, lam, continuum) # erg s^-1 Hz^-1
 
 
 
