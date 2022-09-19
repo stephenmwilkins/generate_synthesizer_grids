@@ -143,6 +143,7 @@ for sps_model in sps_grids:
         for iZ, Z in enumerate(metallicities):
             for ia, log10age in enumerate(log10ages):
 
+                infile = f'{path_to_cloudy_files}/{sps_model}_{cloudy_model}/{ia}_{iZ}'
 
                 # --- get line quantities
                 line_ids, line_wavelengths, _, line_luminosities = read_lines(infile)
