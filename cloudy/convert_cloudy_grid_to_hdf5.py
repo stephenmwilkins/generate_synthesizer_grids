@@ -14,7 +14,7 @@ h = 6.626E-34
 c = 3.E8
 
 from synthesizer.sed import calculate_Q
-from synthesizer.cloudy import read_wavelength, read_continuum
+from synthesizer.cloudy_sw import read_wavelength, read_continuum, default_lines, read_lines
 
 from synthesizer.utils import read_params
 
@@ -29,26 +29,30 @@ path_to_grids = f'{synthesizer_data_dir}/grids'
 path_to_cloudy_files = f'{synthesizer_data_dir}/cloudy'
 
 
-cloudy_models = ['cloudy-v17.03_logUref-2'] # --- the cloudy grid
+cloudy_models = ['cloudy-v17.03_log10Uref-2'] # --- the cloudy grid
 
 sps_grids = [
-    'bc03_chabrier03',
-    'bpass-v2.2.1-bin_100-100',
-    'bpass-v2.2.1-bin_100-300',
-    'bpass-v2.2.1-bin_135-100',
-    'bpass-v2.2.1-bin_135-300',
-    'bpass-v2.2.1-bin_135all-100',
-    'bpass-v2.2.1-bin_170-100',
-    'bpass-v2.2.1-bin_170-300',
-    # 'bpass-v2.2.1-bin_chab-100',
-    'bpass-v2.2.1-bin_chab-300',
-    'maraston-rhb_kroupa',
-    'maraston-rhb_salpeter',
+    # 'bc03_chabrier03',
+    # 'bpass-v2.2.1-bin_100-100',
+    # 'bpass-v2.2.1-bin_100-300',
+    # 'bpass-v2.2.1-bin_135-100',
+    # 'bpass-v2.2.1-bin_135-300',
+    # 'bpass-v2.2.1-bin_135all-100',
+    # 'bpass-v2.2.1-bin_170-100',
+    # 'bpass-v2.2.1-bin_170-300',
+    # 'fsps',
+    'bpass-v2.2.1-bin_chab-100',
+    # 'bpass-v2.2.1-bin_chab-300',
+    # 'maraston-rhb_kroupa',
+    # 'maraston-rhb_salpeter',
+    # 'bc03-2016-Stelib_chabrier03',
+    # 'bc03-2016-BaSeL_chabrier03',
+    # 'bc03-2016-Miles_chabrier03',
 ]
 
 
 
-for sps_grid in sps_grids:
+for sps_model in sps_grids:
 
     for cloudy_model in cloudy_models:
 
@@ -95,6 +99,9 @@ for sps_grid in sps_grids:
 
         # --- now loop over meallicity and ages
 
+        dlog10Q =  np.zeros((na, nZ))
+
+
         for iZ, Z in enumerate(metallicities):
             for ia, log10age in enumerate(log10ages):
 
@@ -110,12 +117,46 @@ for sps_grid in sps_grids:
                     # --- we need to rescale the cloudy spectra to the original SPS spectra. This is done here using the ionising photon luminosity, though could in principle by done at a fixed wavelength.
 
                     log10Q = np.log10(calculate_Q(lam, spectra['incident'][ia, iZ, :]))  # calculate log10Q
+                    dlog10Q[ia, iZ] = hf['log10Q'][ia, iZ] - log10Q
 
                     for spec_name in spec_names:
-                        spectra[spec_name][ia, iZ] *= 10**(hf['log10Q'][ia, iZ] - log10Q)
+                        spectra[spec_name][ia, iZ] *= 10**dlog10Q[ia, iZ]
 
                 else:
                     exists = 'does not exist'
+
+
+
+        # -- get list of lines
+
+        lines = hf.create_group('lines')
+        lines.attrs['lines'] = default_lines  # save list of spectra as attribute
+
+        for line_id in default_lines:
+            lines[f'{line_id}/luminosity'] = np.zeros((na, nZ))
+            lines[f'{line_id}/continuum'] = np.zeros((na, nZ))
+
+
+        for iZ, Z in enumerate(metallicities):
+            for ia, log10age in enumerate(log10ages):
+
+
+                # --- get line quantities
+                line_ids, line_wavelengths, _, line_luminosities = read_lines(infile)
+
+                # --- get continuum spectra
+
+                continuum = spectra['transmitted'][ia, iZ] + spectra['nebular_continuum'][ia, iZ]
+
+                for line_id, line_wv, line_lum in zip(line_ids, line_wavelengths, line_luminosities):
+                    lines[line_id].attrs['wavelength'] = line_wv
+                    lines[f'{line_id}/luminosity'][na, nZ] = 10**(line_lum + dlog10Q[ia, iZ]) # erg s^-1
+                    lines[f'{line_id}/continuum'][na, nZ] = np.interp(line_wv, lam, continuum) # erg s^-1 Hz^-1
+
+
+
+
+
 
         hf.visit(print)
         hf.flush()

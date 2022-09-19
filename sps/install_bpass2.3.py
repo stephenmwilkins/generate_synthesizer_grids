@@ -63,8 +63,11 @@ def make_single_alpha_grid(model, ae = '+00', bs = 'bin'):
 
     # --- get ages
     fn_ = f'{input_dir}/starmass-{bs}-imf_{imf}.a{ae}.{Z_to_Zk[Zs[0]]}.dat'
+    print(fn_)
     starmass = load.model_output(fn_)
     log10ages = starmass['log_age'].values
+
+
 
     # --- get wavelength grid
     fn_ = f'spectra-{bs}-imf_{imf}.a{ae}.{Z_to_Zk[Zs[0]]}.dat'
@@ -339,9 +342,9 @@ if __name__ == "__main__":
         for bs in ['bin']:
 
             # make a grid with a single alpha enahancement value
-            for ae in ['-02','+00','+02','+04','+06']:
-                out_filename = make_single_alpha_grid(model, ae = ae, bs = bs)
+            # for ae in ['-02','+00','+02','+04','+06']:
+            #     out_filename = make_single_alpha_grid(model, ae = ae, bs = bs)
 
 
             # make a full grid
-            # out_filename = make_full_grid(model, bs = bs)
+            out_filename = make_full_grid(model, bs = bs)
