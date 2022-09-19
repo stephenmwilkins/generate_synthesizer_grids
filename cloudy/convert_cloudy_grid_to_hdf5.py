@@ -32,22 +32,22 @@ path_to_cloudy_files = f'{synthesizer_data_dir}/cloudy'
 cloudy_models = ['cloudy-v17.03_log10Uref-2'] # --- the cloudy grid
 
 sps_grids = [
-    # 'bc03_chabrier03',
-    # 'bpass-v2.2.1-bin_100-100',
-    # 'bpass-v2.2.1-bin_100-300',
-    # 'bpass-v2.2.1-bin_135-100',
-    # 'bpass-v2.2.1-bin_135-300',
-    # 'bpass-v2.2.1-bin_135all-100',
-    # 'bpass-v2.2.1-bin_170-100',
-    # 'bpass-v2.2.1-bin_170-300',
-    # 'fsps-v3.2_Chabrier03',
-    # 'bpass-v2.2.1-bin_chab-100',
+    'bc03_chabrier03',
+    'bpass-v2.2.1-bin_100-100',
+    'bpass-v2.2.1-bin_100-300',
+    'bpass-v2.2.1-bin_135-100',
+    'bpass-v2.2.1-bin_135-300',
+    'bpass-v2.2.1-bin_135all-100',
+    'bpass-v2.2.1-bin_170-100',
+    'bpass-v2.2.1-bin_170-300',
+    'fsps-v3.2_Chabrier03',
+    'bpass-v2.2.1-bin_chab-100',
     'bpass-v2.2.1-bin_chab-300',
-    # 'maraston-rhb_kroupa',
-    # 'maraston-rhb_salpeter',
-    # 'bc03-2016-Stelib_chabrier03',
-    # 'bc03-2016-BaSeL_chabrier03',
-    # 'bc03-2016-Miles_chabrier03',
+    'maraston-rhb_kroupa',
+    'maraston-rhb_salpeter',
+    'bc03-2016-Stelib_chabrier03',
+    'bc03-2016-BaSeL_chabrier03',
+    'bc03-2016-Miles_chabrier03',
 ]
 
 
@@ -148,13 +148,15 @@ for sps_model in sps_grids:
                 # --- get line quantities
                 line_ids, line_wavelengths, _, line_luminosities = read_lines(infile)
 
-                # --- get continuum spectra
-
-                continuum = spectra['transmitted'][ia, iZ] + spectra['nebular'][ia, iZ] - spectra['linecont'][ia, iZ]
+                # --- get TOTAL continuum spectra
+                nebular_continuum = spectra['nebular'][ia, iZ] - spectra['linecont'][ia, iZ]
+                continuum = spectra['transmitted'][ia, iZ] + nebular_continuum
 
                 for line_id, line_wv, line_lum in zip(line_ids, line_wavelengths, line_luminosities):
                     lines[line_id].attrs['wavelength'] = line_wv
                     lines[f'{line_id}/luminosity'][ia, iZ] = 10**(line_lum + dlog10Q[ia, iZ]) # erg s^-1
+                    lines[f'{line_id}/stellar_continuum'][ia, iZ] = np.interp(line_wv, lam, spectra['transmitted'][ia, iZ]) # erg s^-1 Hz^-1
+                    lines[f'{line_id}/nebular_continuum'][ia, iZ] = np.interp(line_wv, lam, nebular_continuum) # erg s^-1 Hz^-1
                     lines[f'{line_id}/continuum'][ia, iZ] = np.interp(line_wv, lam, continuum) # erg s^-1 Hz^-1
 
 
