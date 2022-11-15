@@ -52,30 +52,31 @@ ${cloudy} -r $SGE_TASK_ID
 
 
 p = {
-        # --- cloudy model
-        'cloudy_version' : 'v17.03',
-        'U_model' : 'ref', # '' for fixed U
-        'log10U_ref' : -2,
-        'log10age_ref': 6., # target reference age (only needed if U_model = 'ref')
-        'Z_ref': 0.01, # target reference metallicity (only needed if U_model = 'ref')
+    # --- cloudy model
+    'cloudy_version': 'v17.03',
+    'U_model': 'ref',  # '' for fixed U
+    'log10U_ref': -2,
+    'log10age_ref': 6.,  # target reference age (only needed if U_model = 'ref')
+    'Z_ref': 0.01,  # target reference metallicity (only needed if U_model = 'ref')
 
-        # --- abundance parameters,  these are used, alongside the total metallicity (Z), to define the abundance pattern
-        'CO' : 0.0,
-        'd2m' : 0.3,
-        'alpha' : 0.0,
-        'scaling' : None,
+    # --- abundance parameters,  these are used, alongside the total metallicity (Z), to define the abundance pattern
+    'CO': 0.0,
+    'd2m': 0.3,
+    'alpha': 0.0,
+    'scaling': None,
 
-        # --- cloudy parameters
-        'log10radius': -2, # radius in log10 parsecs
-        'covering_factor': 1.0, # covering factor. Keep as 1 as it is more efficient to simply combine SEDs to get != 1.0 values
-        'stop_T': 4000, # K
-        'stop_efrac': -2,
-        'T_floor': 100, # K
-        'log10n_H': 2, # Hydrogen density
-        'z': 0.,
-        'CMB': False,
-        'cosmic_rays': False
-        }
+    # --- cloudy parameters
+    'log10radius': -2,  # radius in log10 parsecs
+    # covering factor. Keep as 1 as it is more efficient to simply combine SEDs to get != 1.0 values
+    'covering_factor': 1.0,
+    'stop_T': 4000,  # K
+    'stop_efrac': -2,
+    'T_floor': 100,  # K
+    'log10n_H': 2,  # Hydrogen density
+    'z': 0.,
+    'CMB': False,
+    'cosmic_rays': False
+}
 
 
 sps_grids = [
@@ -91,15 +92,17 @@ sps_grids = [
     # 'bpass-v2.2.1-bin_chab-300',
     # 'maraston-rhb_kroupa',
     # 'maraston-rhb_salpeter',
-    'bc03-2016-Stelib_chabrier03',
-    'bc03-2016-BaSeL_chabrier03',
-    'bc03-2016-Miles_chabrier03',
+    # 'bc03-2016-Stelib_chabrier03',
+    # 'bc03-2016-BaSeL_chabrier03',
+    # 'bc03-2016-Miles_chabrier03',
 ]
+
+sps_grids = [f'fsps-v3.2_imf3:{imf3:.1f}' for imf3 in [1.5, 3.1, 0.1]]
+
 
 # sps_grids = ['bpass-v2.2.1-bin_chab-100']
 
 cloudy_grid = f'cloudy-{p["cloudy_version"]}_log10U{p["U_model"]}{p["log10U_ref"]}'
-
 
 
 for sps_grid in sps_grids:
@@ -119,8 +122,8 @@ for sps_grid in sps_grids:
 
     output_dir = f'{synthesizer_data_dir}/cloudy/{sps_grid}_{cloudy_grid}'
 
-    Path(output_dir).mkdir(parents = True, exist_ok = True)
-    Path(f'{output_dir}/output').mkdir(parents = True, exist_ok = True) # for apollo output files
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    Path(f'{output_dir}/output').mkdir(parents=True, exist_ok=True)  # for apollo output files
 
     na = len(grid.ages)
     nZ = len(grid.metallicities)
@@ -138,7 +141,8 @@ for sps_grid in sps_grids:
             Z = grid.metallicities[iZ]
 
             # ---- initialise abundances object
-            abundances = Abundances().generate_abundances(Z, p['alpha'], p['CO'], p['d2m'], scaling = p['scaling']) # abundances object
+            abundances = Abundances().generate_abundances(
+                Z, p['alpha'], p['CO'], p['d2m'], scaling=p['scaling'])  # abundances object
 
             for ia in range(na):
 
@@ -152,23 +156,20 @@ for sps_grid in sps_grids:
 
                     log10U = p['log10U_ref']
 
-
                 lam = grid.lam
                 lnu = grid.spectra['stellar'][ia, iZ]
 
-
                 model_name = f'{ia}_{iZ}'
 
-
-                cinput = create_cloudy_input(model_name, lam, lnu, abundances, log10U, output_dir = output_dir, **p)
+                cinput = create_cloudy_input(
+                    model_name, lam, lnu, abundances, log10U, output_dir=output_dir, **p)
 
                 # --- write input file
-                open(f'{output_dir}/{i}.in','w').writelines(cinput)
+                open(f'{output_dir}/{i}.in', 'w').writelines(cinput)
 
                 i += 1
 
-
-    open(f'{output_dir}/run_grid.job','w').write(apollo_job_script)
+    open(f'{output_dir}/run_grid.job', 'w').write(apollo_job_script)
     yaml.dump(p, open(f'{output_dir}/params.yaml', 'w'))
     print(output_dir)
     print(f'qsub -t 1:{n} run_grid.job')
