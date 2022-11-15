@@ -161,8 +161,10 @@ for sps_grid in sps_grids:
 
                 model_name = f'{ia}_{iZ}'
 
+                p['log10U'] = log10U
+
                 cinput = create_cloudy_input(
-                    model_name, lam, lnu, abundances, log10U, output_dir=output_dir, **p)
+                    model_name, lam, lnu, abundances, output_dir=output_dir, **p)
 
                 # --- write input file
                 open(f'{output_dir}/{i}.in', 'w').writelines(cinput)
