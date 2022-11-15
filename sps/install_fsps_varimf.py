@@ -70,10 +70,10 @@ def generate_grid(imf3=2.3):
     write_attribute(out_filename, 'log10Q', 'Description',
                     'Two-dimensional ionising photon production rate grid, [age,Z]')
 
-    write_data_h5py(fname, 'spectra/stellar', data=spec, overwrite=True)
-    write_attribute(fname, 'spectra/stellar', 'Description',
+    write_data_h5py(out_filename, 'spectra/stellar', data=spec, overwrite=True)
+    write_attribute(out_filename, 'spectra/stellar', 'Description',
                     'Three-dimensional spectra grid, [age, metallicity, wavelength]')
-    write_attribute(fname, 'spectra/stellar', 'Units', 'erg s^-1 Hz^-1')
+    write_attribute(out_filename, 'spectra/stellar', 'Units', 'erg s^-1 Hz^-1')
 
 
 if __name__ == "__main__":
