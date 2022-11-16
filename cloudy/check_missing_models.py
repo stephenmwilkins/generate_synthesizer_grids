@@ -46,7 +46,7 @@ sps_grids = [
     'bc03-2016-Miles_chabrier03',
 ]
 
-sps_grids = [f'fsps-v3.2_imf3:{imf3:.1f}' for imf3 in [1.5, 3.1, 0.1]]
+sps_grids = [f'fsps-v3.2_imf3:{imf3:.1f}' for imf3 in np.arange(1.5, 3.1, 0.1)]
 
 
 for sps_model in sps_grids:
