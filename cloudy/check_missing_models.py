@@ -2,7 +2,12 @@
 """ This reads in a cloudy grid of models and creates a new SPS grid including the various outputs """
 
 
-
+from scipy import integrate
+import os
+import shutil
+from synthesizer.utils import read_params
+from synthesizer.cloudy_sw import read_wavelength, read_continuum, default_lines, read_lines
+from synthesizer.sed import calculate_Q
 import argparse
 import numpy as np
 import h5py
@@ -13,15 +18,6 @@ import h5py
 h = 6.626E-34
 c = 3.E8
 
-from synthesizer.sed import calculate_Q
-from synthesizer.cloudy_sw import read_wavelength, read_continuum, default_lines, read_lines
-
-from synthesizer.utils import read_params
-
-import shutil
-import os
-from scipy import integrate
-
 
 synthesizer_data_dir = os.getenv('SYNTHESIZER_DATA')
 
@@ -29,7 +25,7 @@ path_to_grids = f'{synthesizer_data_dir}/grids'
 path_to_cloudy_files = f'{synthesizer_data_dir}/cloudy'
 
 
-cloudy_models = ['cloudy-v17.03_log10Uref-2'] # --- the cloudy grid
+cloudy_models = ['cloudy-v17.03_log10Uref-2']  # --- the cloudy grid
 
 sps_grids = [
     'bc03_chabrier03',
@@ -51,7 +47,6 @@ sps_grids = [
 ]
 
 
-
 for sps_model in sps_grids:
 
     print('-'*50)
@@ -59,12 +54,9 @@ for sps_model in sps_grids:
 
     for cloudy_model in cloudy_models:
 
-
-
         # --- open the original SPS model grid
         fn = f'{path_to_grids}/{sps_model}.h5'
-        hf = h5py.File(fn,'r')
-
+        hf = h5py.File(fn, 'r')
 
         # --- short hand for later
         metallicities = hf['metallicities']
@@ -73,13 +65,19 @@ for sps_model in sps_grids:
         nZ = len(metallicities)  # number of metallicity grid points
         na = len(log10ages)  # number of age grid points
 
-
-
+        i = 1
         for iZ, Z in enumerate(metallicities):
             for ia, log10age in enumerate(log10ages):
 
                 infile = f'{path_to_cloudy_files}/{sps_model}_{cloudy_model}/{ia}_{iZ}'
 
-                if not os.path.isfile(infile+'.cont'):  # attempt to open run.
+                try:
+                    spec_dict = read_continuum(infile, return_dict=True)
+                except:
+                    print(f'qsub -t {i} run_grid.job')
 
-                    print(ia, iZ)
+                i += 1
+
+                # if not os.path.isfile(infile+'.cont'):  # attempt to open run.
+                #
+                #     print(ia, iZ)
