@@ -50,6 +50,8 @@ sps_grids = [f'fsps-v3.2_imf3:{imf3:.1f}' for imf3 in np.arange(1.5, 3.1, 0.1)]
 
 for sps_model in sps_grids:
 
+    print(sps_model, '-'*30)
+
     for cloudy_model in cloudy_models:
 
         # spec_names = ['incident','transmitted','nebular','nebular_continuum','total','linecont']
@@ -80,8 +82,6 @@ for sps_model in sps_grids:
 
         spectra = hf.create_group('spectra')  # create a group holding the spectra in the grid file
         spectra.attrs['spec_names'] = spec_names  # save list of spectra as attribute
-
-        print(spec_names)
 
         spectra['wavelength'] = lam  # save the wavelength
 
@@ -123,6 +123,19 @@ for sps_model in sps_grids:
                         spectra[spec_name][ia, iZ] *= 10**dlog10Q[ia, iZ]
 
                 except:
+
+                    # if the code fails use the previous metallicity point
+
+                    try:
+                        dlog10Q[ia, iZ] = dlog10Q[ia, iZ-1]
+                        for spec_name in spec_names:
+                            spectra[spec_name][ia, iZ] = spectra[spec_name][ia, iZ-1]
+                    except:
+
+                        # if that fails use the previous age point
+                        dlog10Q[ia, iZ] = dlog10Q[ia-1, iZ]
+                        for spec_name in spec_names:
+                            spectra[spec_name][ia, iZ] = spectra[spec_name][ia-1, iZ]
 
                     print('failed for', ia, iZ)
 
@@ -169,5 +182,5 @@ for sps_model in sps_grids:
 
                     hf['cloudy_ok'][ia, iZ] = 0
 
-        hf.visit(print)
+        # hf.visit(print)
         hf.flush()
