@@ -65,7 +65,7 @@ for sps_model in sps_grids:
         hf = h5py.File(fn, 'w')
 
         # --- copy various quantities (all excluding the spectra) from the original sps grid
-        for ds in ['metallicities', 'log10metallicities', 'log10ages', 'log10Q', 'star_fraction', 'remnant_fraction']:
+        for ds in ['metallicities', 'log10metallicities', 'log10ages', 'log10Q']:
             hf_sps.copy(hf_sps[ds], hf['/'], ds)
 
         # --- short hand for later
@@ -95,13 +95,18 @@ for sps_model in sps_grids:
 
         dlog10Q = np.zeros((na, nZ))
 
+        hf['cloudy_ok'] = np.zeros((na, nZ))
+
         for iZ, Z in enumerate(metallicities):
             for ia, log10age in enumerate(log10ages):
 
                 infile = f'{path_to_cloudy_files}/{sps_model}_{cloudy_model}/{ia}_{iZ}'
 
-                if os.path.isfile(infile+'.cont'):  # attempt to open run.
-                    exists = 'exists'
+                try:
+
+                    # if os.path.isfile(infile+'.cont'):  # attempt to open run.
+                    #     exists = 'exists'
+
                     spec_dict = read_continuum(infile, return_dict=True)
                     for spec_name in spec_names:
                         spectra[spec_name][ia, iZ] = spec_dict[spec_name]
@@ -112,11 +117,17 @@ for sps_model in sps_grids:
                     log10Q = np.log10(calculate_Q(lam, spectra['incident'][ia, iZ, :]))
                     dlog10Q[ia, iZ] = hf['log10Q'][ia, iZ] - log10Q
 
+                    hf['cloudy_ok'][ia, iZ] = 1
+
                     for spec_name in spec_names:
                         spectra[spec_name][ia, iZ] *= 10**dlog10Q[ia, iZ]
 
-                else:
-                    exists = 'does not exist'
+                except:
+
+                    print('failed for', ia, iZ)
+
+                # else:
+                #     exists = 'does not exist'
 
         # -- get list of lines
 
@@ -134,23 +145,29 @@ for sps_model in sps_grids:
 
                 infile = f'{path_to_cloudy_files}/{sps_model}_{cloudy_model}/{ia}_{iZ}'
 
-                # --- get line quantities
-                line_ids, line_wavelengths, _, line_luminosities = read_lines(infile)
+                try:
 
-                # --- get TOTAL continuum spectra
-                nebular_continuum = spectra['nebular'][ia, iZ] - spectra['linecont'][ia, iZ]
-                continuum = spectra['transmitted'][ia, iZ] + nebular_continuum
+                    # --- get line quantities
+                    line_ids, line_wavelengths, _, line_luminosities = read_lines(infile)
 
-                for line_id, line_wv, line_lum in zip(line_ids, line_wavelengths, line_luminosities):
-                    lines[line_id].attrs['wavelength'] = line_wv
-                    lines[f'{line_id}/luminosity'][ia,
-                                                   iZ] = 10**(line_lum + dlog10Q[ia, iZ])  # erg s^-1
-                    lines[f'{line_id}/stellar_continuum'][ia,
-                                                          iZ] = np.interp(line_wv, lam, spectra['transmitted'][ia, iZ])  # erg s^-1 Hz^-1
-                    lines[f'{line_id}/nebular_continuum'][ia,
-                                                          iZ] = np.interp(line_wv, lam, nebular_continuum)  # erg s^-1 Hz^-1
-                    lines[f'{line_id}/continuum'][ia,
-                                                  iZ] = np.interp(line_wv, lam, continuum)  # erg s^-1 Hz^-1
+                    # --- get TOTAL continuum spectra
+                    nebular_continuum = spectra['nebular'][ia, iZ] - spectra['linecont'][ia, iZ]
+                    continuum = spectra['transmitted'][ia, iZ] + nebular_continuum
+
+                    for line_id, line_wv, line_lum in zip(line_ids, line_wavelengths, line_luminosities):
+                        lines[line_id].attrs['wavelength'] = line_wv
+                        lines[f'{line_id}/luminosity'][ia,
+                                                       iZ] = 10**(line_lum + dlog10Q[ia, iZ])  # erg s^-1
+                        lines[f'{line_id}/stellar_continuum'][ia,
+                                                              iZ] = np.interp(line_wv, lam, spectra['transmitted'][ia, iZ])  # erg s^-1 Hz^-1
+                        lines[f'{line_id}/nebular_continuum'][ia,
+                                                              iZ] = np.interp(line_wv, lam, nebular_continuum)  # erg s^-1 Hz^-1
+                        lines[f'{line_id}/continuum'][ia,
+                                                      iZ] = np.interp(line_wv, lam, continuum)  # erg s^-1 Hz^-1
+
+                except:
+
+                    hf['cloudy_ok'][ia, iZ] = 0
 
         hf.visit(print)
         hf.flush()
