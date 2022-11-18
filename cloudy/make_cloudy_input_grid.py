@@ -93,6 +93,8 @@ def make_cloudy_input_grid(sps_grid, coudy_parameters={}):
     print(sps_grid)
     print(p)
 
+    cloudy_grid = f'cloudy-{p["cloudy_version"]}_log10U{p["U_model"]}{p["log10U_ref"]}'
+
     # ---- load SPS grid
     grid = SpectralGrid(sps_grid)
 
@@ -187,6 +189,6 @@ if __name__ == "__main__":
         # make grid based on default cloudy parameters
         # make_cloudy_input_grid(sps_grid)
 
-        for Z_ref in np.arange(-4, 1.1, 0.5):
+        for log10U_ref in np.arange(-4, 1.1, 0.5):
 
-            make_cloudy_input_grid(sps_grid, {'Z_ref': Z_ref})
+            make_cloudy_input_grid(sps_grid, {'log10U_ref': log10U_ref})
