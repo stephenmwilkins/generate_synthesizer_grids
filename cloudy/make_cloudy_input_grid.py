@@ -86,7 +86,7 @@ def make_cloudy_input_grid(sps_grid, coudy_parameters={}):
 
     p = default_cloudy_parameters
 
-    for k, v in coudy_parameters:
+    for k, v in coudy_parameters.items():
         p[k] = v
 
     print('-'*40)
