@@ -51,7 +51,7 @@ ${cloudy} -r $SGE_TASK_ID
 """
 
 
-default_cloudy_parameters = {
+p = {
     # --- cloudy model
     'cloudy_version': 'v17.03',
     'U_model': 'ref',  # '' for fixed U
@@ -79,19 +79,36 @@ default_cloudy_parameters = {
 }
 
 
+sps_grids = [
+    # 'bc03_chabrier03',
+    # 'bpass-v2.2.1-bin_100-100',
+    # 'bpass-v2.2.1-bin_100-300',
+    # 'bpass-v2.2.1-bin_135-100',
+    # 'bpass-v2.2.1-bin_135-300',
+    # 'bpass-v2.2.1-bin_135all-100',
+    # 'bpass-v2.2.1-bin_170-100',
+    # 'bpass-v2.2.1-bin_170-300',
+    # 'bpass-v2.2.1-bin_chab-100',
+    # 'bpass-v2.2.1-bin_chab-300',
+    # 'maraston-rhb_kroupa',
+    # 'maraston-rhb_salpeter',
+    # 'bc03-2016-Stelib_chabrier03',
+    # 'bc03-2016-BaSeL_chabrier03',
+    # 'bc03-2016-Miles_chabrier03',
+]
+
+sps_grids = [f'fsps-v3.2_imf3:{imf3:.1f}' for imf3 in np.arange(1.5, 3.1, 0.1)]
+
+
 # sps_grids = ['bpass-v2.2.1-bin_chab-100']
 
+cloudy_grid = f'cloudy-{p["cloudy_version"]}_log10U{p["U_model"]}{p["log10U_ref"]}'
 
-def make_cloudy_input_grid(sps_grid, coudy_parameters={}):
 
-    p = default_cloudy_parameters
-
-    for k, v in coudy_parameters:
-        p[k] = v
+for sps_grid in sps_grids:
 
     print('-'*40)
     print(sps_grid)
-    print(p)
 
     # ---- load SPS grid
     grid = SpectralGrid(sps_grid)
@@ -158,35 +175,3 @@ def make_cloudy_input_grid(sps_grid, coudy_parameters={}):
     yaml.dump(p, open(f'{output_dir}/params.yaml', 'w'))
     print(output_dir)
     print(f'qsub -t 1:{n} run_grid.job')
-
-
-if __name__ == "__main__":
-
-    sps_grids = [
-        # 'bc03_chabrier03',
-        # 'bpass-v2.2.1-bin_100-100',
-        # 'bpass-v2.2.1-bin_100-300',
-        # 'bpass-v2.2.1-bin_135-100',
-        # 'bpass-v2.2.1-bin_135-300',
-        # 'bpass-v2.2.1-bin_135all-100',
-        # 'bpass-v2.2.1-bin_170-100',
-        # 'bpass-v2.2.1-bin_170-300',
-        # 'bpass-v2.2.1-bin_chab-100',
-        'bpass-v2.2.1-bin_chab-300',
-        # 'maraston-rhb_kroupa',
-        # 'maraston-rhb_salpeter',
-        # 'bc03-2016-Stelib_chabrier03',
-        # 'bc03-2016-BaSeL_chabrier03',
-        # 'bc03-2016-Miles_chabrier03',
-    ]
-
-    # sps_grids = [f'fsps-v3.2_imf3:{imf3:.1f}' for imf3 in np.arange(1.5, 3.1, 0.1)] # different high-mass slopes
-
-    for sps_grid in sps_grids:
-
-        # make grid based on default cloudy parameters
-        # make_cloudy_input_grid(sps_grid)
-
-        for Z_ref in np.arange(-4, 1.1, 0.5):
-
-            make_cloudy_input_grid(sps_grid, {'Z_ref': Z_ref})
