@@ -55,9 +55,9 @@ cloudy_models = [f'cloudy-v17.03_log10Uref-{log10U:.1f}' for log10U in np.arange
 
 for sps_model in sps_grids:
 
-    print(sps_model, '-'*30)
-
     for cloudy_model in cloudy_models:
+
+        print(sps_model, cloudy_model, '-'*30)
 
         # spec_names = ['incident','transmitted','nebular','nebular_continuum','total','linecont']
         # --- the cloudy spectra to save (others can be generated later)

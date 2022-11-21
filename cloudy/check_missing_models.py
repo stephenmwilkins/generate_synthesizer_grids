@@ -60,6 +60,9 @@ for sps_model in sps_grids:
 
     for cloudy_model in cloudy_models:
 
+        print(cloudy_model)
+        print(f'{path_to_cloudy_files}/{sps_model}_{cloudy_model}/')
+
         # --- open the original SPS model grid
         fn = f'{path_to_grids}/{sps_model}.h5'
         hf = h5py.File(fn, 'r')
