@@ -50,7 +50,7 @@ sps_grids = [f'fsps-v3.2_imf3:{imf3:.1f}' for imf3 in np.arange(1.5, 3.1, 0.1)]
 
 
 sps_grids = ['bpass-v2.2.1-bin_chab-300']
-cloudy_models = [f'cloudy-v17.03_log10Uref{log10U:.1f}' for log10U in np.arange(-4, 1.1, 0.5)]
+cloudy_models = [f'cloudy-v17.03_log10Uref{log10U:.1f}' for log10U in np.arange(0.5, 1.1, 0.5)]
 
 
 for sps_model in sps_grids:
