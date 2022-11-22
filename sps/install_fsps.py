@@ -37,10 +37,10 @@ def generate_grid(imf):
         spec_ = sp.get_spectrum(zmet=iZ+1)[1]   # 2D array Lsol / AA
         for ia in range(na):
 
-            flam = spec_[ia]  # Lsol / AA
-            flam *= 3.826e33  # erg s^-1 AA^-1 Msol^-1
+            fnu = spec_[ia]  # Lsol / Hz
+            fnu *= 3.826e33  # erg s^-1 Hz^-1 Msol^-1
 
-            fnu = convert_flam_to_fnu(lam, flam)
+            # fnu = convert_flam_to_fnu(lam, flam)
             spec[ia, iZ] = fnu
 
             log10Q[ia, iZ] = np.log10(calculate_Q(lam, fnu))
