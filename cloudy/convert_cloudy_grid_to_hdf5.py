@@ -20,7 +20,6 @@ c = 3.E8
 
 
 synthesizer_data_dir = os.getenv('SYNTHESIZER_DATA')
-
 path_to_grids = f'{synthesizer_data_dir}/grids'
 path_to_cloudy_files = f'{synthesizer_data_dir}/cloudy'
 

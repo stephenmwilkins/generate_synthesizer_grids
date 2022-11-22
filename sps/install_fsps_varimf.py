@@ -78,7 +78,8 @@ def generate_grid(imf3=2.3):
 
 if __name__ == "__main__":
 
-    grid_dir = f'../../../data/synthesizer/grids/'
+    synthesizer_data_dir = os.getenv('SYNTHESIZER_DATA')
+    grid_dir = f'{synthesizer_data_dir}/grids'
 
     for imf3 in np.arange(1.5, 3.1, 0.1):
         print(imf3)
