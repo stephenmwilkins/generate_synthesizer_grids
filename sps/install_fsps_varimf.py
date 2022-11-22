@@ -1,6 +1,7 @@
 import sys
 import numpy as np
 import fsps
+import os
 from synthesizer.sed import convert_flam_to_fnu, calculate_Q
 from utils import write_data_h5py, write_attribute
 
@@ -80,6 +81,7 @@ if __name__ == "__main__":
 
     synthesizer_data_dir = os.getenv('SYNTHESIZER_DATA')
     grid_dir = f'{synthesizer_data_dir}/grids'
+    print(grid_dir)
 
     for imf3 in np.arange(1.5, 3.1, 0.1):
         print(imf3)
