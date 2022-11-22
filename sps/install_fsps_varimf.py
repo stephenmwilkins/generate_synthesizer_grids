@@ -11,7 +11,7 @@ def generate_grid(imf3=2.3):
         this generates grids with different high-mass slopes while adopting the Kroupa imf as a base
     """
 
-    model_name = f'fsps-v3.2_imf3:{imf3}'
+    model_name = f'fsps-v3.2_imf3:{imf3:.1f}'
     out_filename = f'{grid_dir}/{model_name}.h5'
 
     # sfh = 0: ssp, zcontinuous = 0: use metallicity grid
