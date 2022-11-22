@@ -45,39 +45,39 @@ def generate_grid(imf):
 
             log10Q[ia, iZ] = np.log10(calculate_Q(lam, fnu))
 
-    write_data_h5py(fname, 'spectra/wavelength', data=lam, overwrite=True)
-    write_attribute(fname, 'spectra/wavelength', 'Description',
+    write_data_h5py(out_filename, 'spectra/wavelength', data=lam, overwrite=True)
+    write_attribute(out_filename, 'spectra/wavelength', 'Description',
                     'Wavelength of the spectra grid')
-    write_attribute(fname, 'spectra/wavelength', 'Units', 'AA')
+    write_attribute(out_filename, 'spectra/wavelength', 'Units', 'AA')
 
-    write_data_h5py(fname, 'ages', data=ages, overwrite=True)
-    write_attribute(fname, 'ages', 'Description',
+    write_data_h5py(out_filename, 'ages', data=ages, overwrite=True)
+    write_attribute(out_filename, 'ages', 'Description',
                     'Stellar population ages years')
-    write_attribute(fname, 'ages', 'Units', 'yr')
+    write_attribute(out_filename, 'ages', 'Units', 'yr')
 
-    write_data_h5py(fname, 'log10ages', data=log10ages, overwrite=True)
-    write_attribute(fname, 'log10ages', 'Description',
+    write_data_h5py(out_filename, 'log10ages', data=log10ages, overwrite=True)
+    write_attribute(out_filename, 'log10ages', 'Description',
                     'Stellar population ages in log10 years')
-    write_attribute(fname, 'log10ages', 'Units', 'log10(yr)')
+    write_attribute(out_filename, 'log10ages', 'Units', 'log10(yr)')
 
-    write_data_h5py(fname, 'metallicities', data=metallicities, overwrite=True)
-    write_attribute(fname, 'metallicities', 'Description',
+    write_data_h5py(out_filename, 'metallicities', data=metallicities, overwrite=True)
+    write_attribute(out_filename, 'metallicities', 'Description',
                     'raw abundances')
-    write_attribute(fname, 'metallicities', 'Units', 'dimensionless [Z]')
+    write_attribute(out_filename, 'metallicities', 'Units', 'dimensionless [Z]')
 
-    write_data_h5py(fname, 'log10metallicities', data=log10metallicities, overwrite=True)
-    write_attribute(fname, 'log10metallicities', 'Description',
+    write_data_h5py(out_filename, 'log10metallicities', data=log10metallicities, overwrite=True)
+    write_attribute(out_filename, 'log10metallicities', 'Description',
                     'raw abundances in log10')
-    write_attribute(fname, 'log10metallicities', 'Units', 'dimensionless [log10(Z)]')
+    write_attribute(out_filename, 'log10metallicities', 'Units', 'dimensionless [log10(Z)]')
 
-    write_data_h5py(fname, 'log10Q', data=log10Q, overwrite=True)
-    write_attribute(fname, 'log10Q', 'Description',
+    write_data_h5py(out_filename, 'log10Q', data=log10Q, overwrite=True)
+    write_attribute(out_filename, 'log10Q', 'Description',
                     'Two-dimensional ionising photon production rate grid, [age,Z]')
 
-    write_data_h5py(fname, 'spectra/stellar', data=spec, overwrite=True)
-    write_attribute(fname, 'spectra/stellar', 'Description',
+    write_data_h5py(out_filename, 'spectra/stellar', data=spec, overwrite=True)
+    write_attribute(out_filename, 'spectra/stellar', 'Description',
                     'Three-dimensional spectra grid, [age, metallicity, wavelength]')
-    write_attribute(fname, 'spectra/stellar', 'Units', 'erg s^-1 Hz^-1')
+    write_attribute(out_filename, 'spectra/stellar', 'Units', 'erg s^-1 Hz^-1')
 
 
 if __name__ == "__main__":
