@@ -182,7 +182,8 @@ if __name__ == "__main__":
         # 'bc03-2016-Miles_chabrier03',
     ]
 
-    # sps_grids = [f'fsps-v3.2_imf3:{imf3:.1f}' for imf3 in np.arange(1.5, 3.1, 0.1)] # different high-mass slopes
+    # different high-mass slopes
+    sps_grids = [f'fsps-v3.2_imf3:{imf3:.1f}' for imf3 in np.arange(1.5, 3.1, 0.1)]
 
     for sps_grid in sps_grids:
 
