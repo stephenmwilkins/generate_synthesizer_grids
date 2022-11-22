@@ -82,7 +82,7 @@ def generate_grid(imf):
 
 if __name__ == "__main__":
 
-    grid_dir = f'{synthesizer_data_dir}/grids'
+    grid_dir = '/its/research/astrodata/highz/synthesizer/grids/'
 
     imfs = ['Salpeter', 'Chabrier03', 'Kroupa01']
     imfs = ['Salpeter']
