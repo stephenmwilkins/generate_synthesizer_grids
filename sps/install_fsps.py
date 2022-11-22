@@ -6,20 +6,20 @@ from utils import write_data_h5py, write_attribute
 
 
 imf_key = {
-    'Salpeter' : 0,
-    'Chabrier03' : 1,
-    'Kroupa01' : 2,
+    'Salpeter': 0,
+    'Chabrier03': 1,
+    'Kroupa01': 2,
 }
 
 
 def generate_grid(imf):
     """ Main function to create fsps grids used by synthesizer """
 
-
     model_name = f'fsps-v3.2_{imf}'
     out_filename = f'{grid_dir}/{model_name}.h5'
 
-    sp = fsps.StellarPopulation(imf_type = imf_key[imf]) # sfh = 0: ssp, zcontinuous = 0: use metallicity grid
+    # sfh = 0: ssp, zcontinuous = 0: use metallicity grid
+    sp = fsps.StellarPopulation(imf_type=imf_key[imf])
 
     lam = sp.wavelengths  # units: Angstroms
     log10ages = sp.log_age  # units: log10(years)
@@ -30,7 +30,7 @@ def generate_grid(imf):
     na = len(log10ages)
     nZ = len(metallicities)
 
-    log10Q = np.zeros((na,nZ)) # the ionising photon production rate
+    log10Q = np.zeros((na, nZ))  # the ionising photon production rate
     spec = np.zeros((na, nZ, len(lam)))
 
     for iZ in range(nZ):
@@ -45,37 +45,34 @@ def generate_grid(imf):
 
             log10Q[ia, iZ] = np.log10(calculate_Q(lam, fnu))
 
-
-
-
     write_data_h5py(fname, 'spectra/wavelength', data=lam, overwrite=True)
     write_attribute(fname, 'spectra/wavelength', 'Description',
-            'Wavelength of the spectra grid')
+                    'Wavelength of the spectra grid')
     write_attribute(fname, 'spectra/wavelength', 'Units', 'AA')
 
     write_data_h5py(fname, 'ages', data=ages, overwrite=True)
     write_attribute(fname, 'ages', 'Description',
-            'Stellar population ages years')
+                    'Stellar population ages years')
     write_attribute(fname, 'ages', 'Units', 'yr')
 
     write_data_h5py(fname, 'log10ages', data=log10ages, overwrite=True)
     write_attribute(fname, 'log10ages', 'Description',
-            'Stellar population ages in log10 years')
+                    'Stellar population ages in log10 years')
     write_attribute(fname, 'log10ages', 'Units', 'log10(yr)')
 
     write_data_h5py(fname, 'metallicities', data=metallicities, overwrite=True)
     write_attribute(fname, 'metallicities', 'Description',
-            'raw abundances')
+                    'raw abundances')
     write_attribute(fname, 'metallicities', 'Units', 'dimensionless [Z]')
 
     write_data_h5py(fname, 'log10metallicities', data=log10metallicities, overwrite=True)
     write_attribute(fname, 'log10metallicities', 'Description',
-            'raw abundances in log10')
+                    'raw abundances in log10')
     write_attribute(fname, 'log10metallicities', 'Units', 'dimensionless [log10(Z)]')
 
     write_data_h5py(fname, 'log10Q', data=log10Q, overwrite=True)
     write_attribute(fname, 'log10Q', 'Description',
-                                    'Two-dimensional ionising photon production rate grid, [age,Z]')
+                    'Two-dimensional ionising photon production rate grid, [age,Z]')
 
     write_data_h5py(fname, 'spectra/stellar', data=spec, overwrite=True)
     write_attribute(fname, 'spectra/stellar', 'Description',
@@ -88,8 +85,8 @@ if __name__ == "__main__":
     grid_dir = f'{synthesizer_data_dir}/grids'
 
     imfs = ['Salpeter', 'Chabrier03', 'Kroupa01']
-    imfs = ['Chabrier03']
+    imfs = ['Salpeter']
 
     for imf in imfs:
 
-         generate_grid(imf)
+        generate_grid(imf)
