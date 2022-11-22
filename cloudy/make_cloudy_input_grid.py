@@ -174,7 +174,7 @@ if __name__ == "__main__":
         # 'bpass-v2.2.1-bin_170-100',
         # 'bpass-v2.2.1-bin_170-300',
         # 'bpass-v2.2.1-bin_chab-100',
-        'bpass-v2.2.1-bin_chab-300',
+        # 'bpass-v2.2.1-bin_chab-300',
         # 'maraston-rhb_kroupa',
         # 'maraston-rhb_salpeter',
         # 'bc03-2016-Stelib_chabrier03',
@@ -190,6 +190,6 @@ if __name__ == "__main__":
         # make grid based on default cloudy parameters
         # make_cloudy_input_grid(sps_grid)
 
-        for log10U_ref in np.arange(-4, 1.1, 0.5):
+        # for log10U_ref in np.arange(-4, 1.1, 0.5):
 
-            make_cloudy_input_grid(sps_grid, {'log10U_ref': log10U_ref})
+        make_cloudy_input_grid(sps_grid)
