@@ -24,7 +24,7 @@ path_to_grids = f'{synthesizer_data_dir}/grids'
 path_to_cloudy_files = f'{synthesizer_data_dir}/cloudy'
 
 
-cloudy_models = ['cloudy-v17.03_log10Uref-2']  # --- the cloudy grid
+cloudy_models = ['cloudy-v17.03_log10Uref-2.0']  # --- the cloudy grid
 
 # sps_grids = [
 #     'bc03_chabrier03',
@@ -56,6 +56,8 @@ for sps_model in sps_grids:
 
     for cloudy_model in cloudy_models:
 
+        cloudy_model_ = cloudy_model[:-2]  # get rid of trailing '.0'
+
         print(sps_model, cloudy_model, '-'*30)
 
         # spec_names = ['incident','transmitted','nebular','nebular_continuum','total','linecont']
@@ -67,7 +69,7 @@ for sps_model in sps_grids:
         hf_sps = h5py.File(fn, 'r')
 
         # --- open the new grid file
-        fn = f'{path_to_grids}/{sps_model}_{cloudy_model}.h5'  # the new cloudy grid
+        fn = f'{path_to_grids}/{sps_model}_{cloudy_model_}.h5'  # the new cloudy grid
         hf = h5py.File(fn, 'w')
 
         # --- copy various quantities (all excluding the spectra) from the original sps grid

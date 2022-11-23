@@ -52,7 +52,7 @@ path_to_cloudy_files = f'{synthesizer_data_dir}/cloudy'
 # sps_grids = ['bpass-v2.2.1-bin_chab-300']
 # cloudy_models = [f'cloudy-v17.03_log10Uref{log10U:.1f}' for log10U in np.arange(-4, 1.1, 0.5)]
 
-cloudy_models = ['cloudy-v17.03_log10Uref-2']  # --- the cloudy grid
+cloudy_models = ['cloudy-v17.03_log10Uref-2.0']  # --- the cloudy grid
 # sps_grids = [f'fsps-v3.2_imf3:1.5']
 sps_grids = [f'fsps-v3.2_imf3:{imf3:.1f}' for imf3 in np.arange(1.5, 3.1, 0.1)]
 
