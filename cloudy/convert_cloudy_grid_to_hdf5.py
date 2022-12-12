@@ -24,8 +24,6 @@ path_to_grids = f'{synthesizer_data_dir}/grids'
 path_to_cloudy_files = f'{synthesizer_data_dir}/cloudy'
 
 
-cloudy_models = ['cloudy-v17.03_log10Uref-2.0']  # --- the cloudy grid
-
 # sps_grids = [
 #     'bc03_chabrier03',
 #     'bpass-v2.2.1-bin_100-100',
@@ -45,15 +43,28 @@ cloudy_models = ['cloudy-v17.03_log10Uref-2.0']  # --- the cloudy grid
 #     'bc03-2016-Miles_chabrier03',
 # ]
 
-sps_grids = [f'fsps-v3.2_imf3:{imf3:.1f}' for imf3 in np.arange(1.5, 3.1, 0.1)]
-# sps_grids = [f'fsps-v3.2_imf3:1.5']
+# cloudy_models = ['cloudy-v17.03_log10Uref-2.0']  # --- the default cloudy grid
 
+
+# --- different ionisation parameters
 # sps_grids = ['bpass-v2.2.1-bin_chab-300']
 # cloudy_models = [f'cloudy-v17.03_log10Uref{log10U:.1f}' for log10U in np.arange(0.5, 1.1, 0.5)]
 
-sps_grids = [
-    f'fsps-v3.2_imfll:{imf_lower_limit:.1f}' for imf_lower_limit in [0.5, 1, 5, 10, 50]]
+# --- different nebular alpha enhancements
+sps_grids = ['bpass-v2.2.1-bin_chab-300']
+cloudy_models = [
+    f'cloudy-v17.03_log10Uref-2.0_alpha{alpha:.1f}' for alpha in np.arange(-0.2, 1.2, 0.2)]
 
+
+# --- different IMF high-mass slopes
+# sps_grids = [f'fsps-v3.2_imf3:{imf3:.1f}' for imf3 in np.arange(1.5, 3.1, 0.1)]
+# sps_grids = [f'fsps-v3.2_imf3:1.5']
+# cloudy_models = ['cloudy-v17.03_log10Uref-2.0']  # --- the cloudy grid
+
+# --- different IMF cuts
+# sps_grids = [
+#     f'fsps-v3.2_imfll:{imf_lower_limit:.1f}' for imf_lower_limit in [0.5, 1, 5, 10, 50]]
+# cloudy_models = ['cloudy-v17.03_log10Uref-2.0']  # --- the cloudy grid
 
 for sps_model in sps_grids:
 
