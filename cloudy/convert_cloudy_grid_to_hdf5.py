@@ -53,7 +53,7 @@ path_to_cloudy_files = f'{synthesizer_data_dir}/cloudy'
 # --- different nebular alpha enhancements
 sps_grids = ['bpass-v2.2.1-bin_chab-300']
 cloudy_models = [
-    f'cloudy-v17.03_log10Uref-2.0_alpha{alpha:.1f}' for alpha in np.arange(0.2, 1.2, 0.2)]
+    f'cloudy-v17.03_log10Uref-2.0_alpha{alpha:.1f}' for alpha in np.arange(-0.2, 1.2, 0.2)]
 
 
 # --- different IMF high-mass slopes
@@ -70,7 +70,7 @@ for sps_model in sps_grids:
 
     for cloudy_model in cloudy_models:
 
-        cloudy_model_ = cloudy_model[:-2]  # get rid of trailing '.0'
+        # cloudy_model_ = cloudy_model[:-2]  # get rid of trailing '.0'
 
         print(sps_model, cloudy_model, '-'*30)
 
