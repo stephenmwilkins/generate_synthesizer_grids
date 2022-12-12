@@ -71,7 +71,7 @@ for sps_model in sps_grids:
     for cloudy_model in cloudy_models:
 
         # cloudy_model_ = cloudy_model[:-2]  # get rid of trailing '.0'
-
+        cloudy_model_ = cloudy_model
         print(sps_model, cloudy_model, '-'*30)
 
         # spec_names = ['incident','transmitted','nebular','nebular_continuum','total','linecont']
